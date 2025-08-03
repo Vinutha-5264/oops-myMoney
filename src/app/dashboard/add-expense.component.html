@@ -1,0 +1,23 @@
+<div class="p-4 max-w-md mx-auto">
+  <h2 class="text-xl font-bold mb-4">Add Expense</h2>
+
+  <label class="block mb-2">Category</label>
+  <select [(ngModel)]="selectedCategory" class="w-full border p-2 mb-4">
+    <option value="" disabled selected>Select a category</option>
+    <option *ngFor="let cat of categories" [value]="cat.name">
+      {{ cat.name }}
+    </option>
+  </select>
+
+  <label class="block mb-2">Amount</label>
+  <input
+    type="number"
+    [(ngModel)]="amount"
+    class="w-full border p-2 mb-4"
+    placeholder="Enter amount"
+  />
+
+  <button (click)="addExpense()" class="bg-blue-600 text-white px-4 py-2 rounded">
+    Add Expense
+  </button>
+</div>

@@ -1,0 +1,89 @@
+<h2 class="text-xl font-bold mb-4">Your Dashboard</h2>
+
+<!-- Totals Summary -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <app-stat-box label="All Time" [value]="totalSpent"></app-stat-box>
+  <app-stat-box label="This Year" [value]="yearlyTotal"></app-stat-box>
+  <app-stat-box label="This Month" [value]="monthlyTotal"></app-stat-box>
+</div>
+
+<!-- Filter -->
+<div class="mb-4">
+  <label class="mr-2 font-semibold">Filter by:</label>
+  <select [(ngModel)]="filterOption" (change)="applyFilter()" class="border px-2 py-1">
+    <option value="thisMonth">This Month</option>
+    <option value="lastMonth">Last Month</option>
+    <option value="thisYear">This Year</option>
+    <option value="all">All Time</option>
+  </select>
+</div>
+
+<!-- Add Expense Toggle -->
+<button class="bg-blue-500 text-white px-4 py-2 rounded mb-4" (click)="showForm = !showForm">
+  {{ showForm ? 'Cancel' : 'Add Expense' }}
+</button>
+
+<!-- Add Expense Form -->
+<form *ngIf="showForm" (submit)="submitExpense($event)" class="space-y-4 mb-6">
+  <div>
+    <label class="block">Amount:</label>
+    <input type="number" [(ngModel)]="newExpense.amount" name="amount" class="border px-2 py-1 w-full" required />
+  </div>
+
+  <div>
+    <label class="block">Category:</label>
+    <select [(ngModel)]="newExpense.category" name="category" class="border px-2 py-1 w-full" required>
+      <option value="" disabled selected>Select category</option>
+      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+    </select>
+    <div class="text-sm text-blue-600 mt-1 cursor-pointer" (click)="showCategoryInput = !showCategoryInput">
+      + {{ showCategoryInput ? 'Cancel' : 'Add new category' }}
+    </div>
+  </div>
+
+  <div *ngIf="showCategoryInput" class="mt-2">
+    <input type="text" [(ngModel)]="newCategory" name="newCategory" placeholder="New category name" class="border px-2 py-1 w-full" />
+    <button type="button" (click)="addCategory()" class="bg-green-500 text-white px-3 py-1 mt-2 rounded">Save Category</button>
+  </div>
+
+  <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Add Expense</button>
+</form>
+
+<!-- Spending by Category -->
+<h3 class="text-lg font-semibold mb-2">Spending by Category</h3>
+<ul class="mb-4">
+  <li *ngFor="let key of categoryKeys()">
+    {{ key }}: ₹{{ categoryTotals[key] }}
+  </li>
+</ul>
+
+<!-- ✅ Pie Chart Fixed -->
+<div class="mb-6 max-w-md">
+  <canvas baseChart
+    [data]="{ labels: pieChartLabels, datasets: [{ data: pieChartData }] }"
+    [type]="'pie'">
+  </canvas>
+</div>
+
+<!-- Expense List -->
+<h3 class="text-lg font-semibold mb-2">All Expenses</h3>
+<ul class="space-y-2">
+  <li *ngFor="let exp of filteredExpenses">
+    ₹{{ exp.amount }} - {{ exp.category }} - {{ exp.date | date:'shortDate' }}
+    <button (click)="editExpense(exp)" class="ml-2 text-blue-600">Edit</button>
+    <button (click)="deleteExpense(exp)" class="ml-2 text-red-600">Delete</button>
+  </li>
+</ul>
+
+<!-- Edit Form -->
+<div *ngIf="editingExpense" class="mt-4 border-t pt-4">
+  <h4 class="font-bold mb-2">Edit Expense</h4>
+  <form (ngSubmit)="submitEdit()">
+    <input type="number" [(ngModel)]="editingExpense.amount" name="editAmount" class="border px-2 py-1 mr-2" required />
+    <select [(ngModel)]="editingExpense.category" name="editCategory" class="border px-2 py-1 mr-2">
+      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+    </select>
+    <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded">Save</button>
+    <button type="button" (click)="cancelEdit()" class="ml-2 text-gray-600">Cancel</button>
+  </form>
+</div>
