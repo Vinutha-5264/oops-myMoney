@@ -109,12 +109,21 @@
 </ul>
 
 <!-- Pie Chart -->
+<!-- Bar Chart -->
+<button (click)="toggleChartType()">
+  Switch to {{ chartType === 'pie' ? 'Bar' : 'Pie' }} Chart
+</button>
+
 <div class="chart-wrapper">
   <canvas baseChart
-    [data]="{ labels: pieChartLabels, datasets: [{ data: pieChartData }] }"
-    [type]="'pie'">
-  </canvas>
+  [data]="{ labels: chartLabels, datasets: [{ data: chartData, backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#8e44ad', '#2ecc71', '#e67e22'] }] }"
+  [type]="chartType"
+  [options]="chartOptions">
+</canvas>
+
 </div>
+
+
 
 <!-- Expense List -->
 <h3>All Expenses</h3>

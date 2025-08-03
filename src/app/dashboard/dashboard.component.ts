@@ -8,7 +8,6 @@ import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { NgChartsModule } from 'ng2-charts';
 
-
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -39,11 +38,12 @@ export class DashboardComponent implements OnInit {
   filterOption: string = 'thisMonth';
 
   selectedFilter: string = 'thisMonth';
- // used in the dropdown
 
-  // Pie Chart data
-  pieChartLabels: string[] = [];
-  pieChartData: number[] = [];
+  // Chart data
+  chartLabels: string[] = [];
+  chartData: number[] = [];
+  chartType: 'pie' | 'bar' = 'bar';  // Default chart type
+  chartOptions: any;
 
   async ngOnInit() {
     await this.loadExpenses();
@@ -171,11 +171,39 @@ export class DashboardComponent implements OnInit {
       this.categoryTotals[category] += amount;
     }
 
-    this.updatePieChart();
+    this.updateChart();
   }
 
-  private updatePieChart() {
-    this.pieChartLabels = this.categoryKeys();
-    this.pieChartData = this.pieChartLabels.map(cat => this.categoryTotals[cat]);
+  private updateChart() {
+    this.chartLabels = this.categoryKeys();
+    this.chartData = this.chartLabels.map(cat => this.categoryTotals[cat]);
+
+    this.chartOptions = {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: this.chartType === 'pie'
+        },
+        tooltip: {
+          callbacks: {
+            label: (context: any) => `₹${context.parsed.y ?? context.parsed}`
+          }
+        }
+      },
+      scales: this.chartType === 'bar' ? {
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Amount (₹)' }
+        },
+        x: {
+          title: { display: true, text: 'Category' }
+        }
+      } : {}
+    };
+  }
+
+  toggleChartType() {
+    this.chartType = this.chartType === 'pie' ? 'bar' : 'pie';
+    this.updateChart();  // Recalculate chart options
   }
 }
