@@ -1,0 +1,356 @@
+/* General Layout */
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #ec4899;
+}
+
+.dashboard-header p {
+  color: #7c3aed;
+  font-size: 1.125rem;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* Section Headings */
+h2, h3, h4 {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #4b5563;
+}
+
+/* Stat Summary Box */
+.stat-summary-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.main-stat {
+  background: #fdf2f8;
+  color: #db2777;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  font-size: 1.5rem;
+  text-align: center;
+  width: 100%;
+  max-width: 300px;
+  font-weight: bold;
+}
+
+.main-stat .label {
+  font-size: 1.1rem;
+  color: #6b21a8;
+  margin-bottom: 0.25rem;
+}
+
+.side-stats {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.side-stat {
+  background: #ede9fe;
+  color: #4c1d95;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Filter */
+.filter-section {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-section select {
+  border: 1px solid #cbd5e0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+}
+
+/* ✅ Default Buttons */
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button[type="submit"] {
+  background-color: #16a34a;
+  color: white;
+  margin-top: 1rem;
+}
+
+/* .button[type="button"] {
+  background-color: #60a5fa;
+  color: white;
+} */
+
+/* Add Expense Form */
+.add-expense-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.add-expense-form input,
+.add-expense-form select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+}
+
+.toggle-new-category {
+  font-size: 0.875rem;
+  color: #3b82f6;
+  margin-top: 0.25rem;
+  cursor: pointer;
+}
+
+/* Spending by Category */
+.category-totals {
+  margin-bottom: 1.5rem;
+  list-style: none;
+  padding: 0;
+}
+
+.category-totals li {
+  padding: 0.25rem 0;
+  color: #374151;
+}
+
+/* Chart */
+.chart-wrapper {
+  max-width: 180px;
+  margin: 0 auto 2rem;
+}
+
+/* Expense List */
+.expense-list {
+  list-style: none;
+  padding: 0;
+}
+
+.expense-list li {
+  padding: 0.5rem;
+  background-color: #f9fafb;
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.expense-list li + li {
+  margin-top: 0.5rem;
+}
+
+.expense-list button {
+  margin-left: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.expense-list button:first-of-type {
+  color: #2563eb;
+  background-color: transparent;
+}
+
+.expense-list button:last-of-type {
+  color: #dc2626;
+  background-color: transparent;
+}
+
+/* Edit Form */
+.edit-form {
+  margin-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+}
+
+.edit-form form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.edit-form input,
+.edit-form select {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  .edit-form form {
+    flex-direction: column;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ✅ Uiverse Button Styles */
+.button {
+  all: unset;
+  position: relative;
+  display: inline-flex;
+  height: 3.5rem;
+  align-items: center;
+  border-radius: 9999px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  font-family: Segoe UI;
+  font-size: 1.2rem;
+  font-weight: 640;
+  color: #fafaf6;
+  letter-spacing: -0.06em;
+}
+
+.button-item {
+  background-color: transparent;
+  color: #1d1d1f;
+}
+
+.button-item .button-bg {
+  border-color: rgba(255, 208, 116);
+  background-color: rgba(255, 208, 116);
+}
+
+.button-inner,
+.button-inner-hover,
+.button-inner-static {
+  pointer-events: none;
+  display: block;
+}
+
+.button-inner {
+  position: relative;
+}
+
+.button-inner-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transform: translateY(70%);
+}
+
+.button-bg {
+  overflow: hidden;
+  border-radius: 2rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: scale(1);
+  transition: transform 1.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.button-bg,
+.button-bg-layer,
+.button-bg-layers {
+  display: block;
+}
+
+.button-bg-layers {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  top: -60%;
+  aspect-ratio: 1 / 1;
+  width: max(200%, 10rem);
+}
+
+.button-bg-layer {
+  border-radius: 9999px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: scale(0);
+}
+
+.button-bg-layer.-purple {
+  background-color: rgba(163, 116, 255);
+}
+
+.button-bg-layer.-turquoise {
+  background-color: rgba(23, 241, 209);
+}
+
+.button-bg-layer.-yellow {
+  background-color: rgba(255, 208, 116, var(--tw-bg-opacity));
+}
+
+/* Hover animation for desktop */
+.button:hover .button-inner-static {
+  opacity: 0;
+  transform: translateY(-70%);
+  transition: transform 1.4s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s linear;
+}
+
+.button:hover .button-inner-hover {
+  opacity: 1;
+  transform: translateY(0);
+  transition: transform 1.4s cubic-bezier(0.19, 1, 0.22, 1), opacity 1.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.button:hover .button-bg-layer {
+  transition: transform 1.3s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s linear;
+}
+
+.button:hover .button-bg-layer-1 {
+  transform: scale(1);
+}
+
+.button:hover .button-bg-layer-2 {
+  transition-delay: 0.1s;
+  transform: scale(1);
+}
+
+.button:hover .button-bg-layer-3 {
+  transition-delay: 0.2s;
+  transform: scale(1);
+}
+
+/* 👇 Tap-to-animate support for mobile (simulate hover) */
+.button:active .button-inner-static {
+  opacity: 0;
+  transform: translateY(-70%);
+}
+
+.button:active .button-inner-hover {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.button:active .button-bg-layer-1,
+.button:active .button-bg-layer-2,
+.button:active .button-bg-layer-3 {
+  transform: scale(1);
+}

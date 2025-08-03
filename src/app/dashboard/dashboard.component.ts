@@ -8,11 +8,13 @@ import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { NgChartsModule } from 'ng2-charts';
 
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, NgIf, NgFor, FormsModule, StatBoxComponent, NgChartsModule],
   templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
   private expenseService = inject(ExpenseService);
