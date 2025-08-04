@@ -2,7 +2,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
-let analytics; // Don't export unless needed
+// let analytics; // Don't export unless needed
 let app = initializeApp({
   apiKey: 'AIzaSyBfYv5LGOnUEjwePWNi0Q1yvA6bsV2gEYM',
   authDomain: 'noob-da13c.firebaseapp.com',
@@ -15,11 +15,11 @@ let app = initializeApp({
 
 const db = getFirestore(app);
 
-// ✅ Only call analytics if window is available
-if (typeof window !== 'undefined') {
-  import('firebase/analytics').then(({ getAnalytics }) => {
-    analytics = getAnalytics(app);
-  });
-}
+// // ✅ Only call analytics if window is available
+// if (typeof window !== 'undefined') {
+//   import('firebase/analytics').then(({ getAnalytics }) => {
+//     analytics = getAnalytics(app);
+//   });
+// }
 
 export { db };
