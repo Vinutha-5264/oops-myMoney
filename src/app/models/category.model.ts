@@ -3,4 +3,5 @@ export interface Category {
   id?: string;
   name: string;
   username: string;
+  subcategories: string[];
 }

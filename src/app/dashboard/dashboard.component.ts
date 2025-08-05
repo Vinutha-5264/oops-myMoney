@@ -1,6 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ExpenseService } from '../services/expense.service';
+import { CategoryService } from '../services/category.service';
 import { Expense } from '../models/expense.model';
+import { Category } from '../models/category.model';
 import { NgIf, NgFor, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StatBoxComponent } from './stat-box.component';
@@ -17,6 +19,7 @@ import { NgChartsModule } from 'ng2-charts';
 })
 export class DashboardComponent implements OnInit {
   private expenseService = inject(ExpenseService);
+  private categoryService = inject(CategoryService);
 
   expenses: Expense[] = [];
   filteredExpenses: Expense[] = [];
@@ -26,23 +29,32 @@ export class DashboardComponent implements OnInit {
   yearlyTotal = 0;
   categoryTotals: { [category: string]: number } = {};
 
-  categories: string[] = [];
   username = localStorage.getItem('username') || '';
 
-  newExpense = { amount: 0, category: '' };
+  newExpense = { amount: 0 };
   newCategory = '';
+  newSubcategory = '';
+
   editingExpense: Expense | null = null;
 
   showForm = false;
   showCategoryInput = false;
-  filterOption: string = 'thisMonth';
 
+  filterOption: string = 'thisMonth';
   selectedFilter: string = 'thisMonth';
+
+  categories: Category[] = [];
+  selectedCategoryId: string = '';
+  selectedSubcategory: string = '';
+
+  showMainCategoryInput: boolean = false;
+  showSubcategoryInput: boolean = false;
+
 
   // Chart data
   chartLabels: string[] = [];
   chartData: number[] = [];
-  chartType: 'pie' | 'bar' = 'bar';  // Default chart type
+  chartType: 'pie' | 'bar' = 'bar';
   chartOptions: any;
 
   async ngOnInit() {
@@ -56,32 +68,51 @@ export class DashboardComponent implements OnInit {
   }
 
   async loadCategories() {
-    this.categories = await this.expenseService.getCategoriesForUser(this.username);
+    this.categories = await this.categoryService.getCategoriesByUser(this.username);
+  }
+
+  getSelectedSubcategories(): string[] {
+    const cat = this.categories.find(c => c.id === this.selectedCategoryId);
+    return cat?.subcategories || [];
   }
 
   async submitExpense(event: Event) {
     event.preventDefault();
-    if (!this.newExpense.category || this.newExpense.amount <= 0) return;
+    if (!this.selectedCategoryId || !this.selectedSubcategory || this.newExpense.amount <= 0) return;
+
+    const categoryObj = this.categories.find(c => c.id === this.selectedCategoryId);
+    const fullCategory = `${categoryObj?.name}:${this.selectedSubcategory}`;
 
     await this.expenseService.addExpense({
       amount: this.newExpense.amount,
-      category: this.newExpense.category,
+      category: fullCategory,
       username: this.username
     });
 
     await this.loadExpenses();
-    this.newExpense = { amount: 0, category: '' };
+    this.newExpense = { amount: 0 };
+    this.selectedCategoryId = '';
+    this.selectedSubcategory = '';
     this.showForm = false;
   }
 
   async addCategory() {
     const trimmed = this.newCategory.trim();
-    if (!trimmed || this.categories.includes(trimmed)) return;
+    if (!trimmed) return;
 
-    this.categories.push(trimmed);
-    await this.expenseService.saveCategory(this.username, trimmed);
+    await this.categoryService.addCategory(trimmed, this.username);
     this.newCategory = '';
     this.showCategoryInput = false;
+    await this.loadCategories();
+  }
+
+  async addSubcategory() {
+    const trimmed = this.newSubcategory.trim();
+    if (!trimmed || !this.selectedCategoryId) return;
+
+    await this.categoryService.addSubcategory(this.selectedCategoryId, trimmed);
+    this.newSubcategory = '';
+    await this.loadCategories();
   }
 
   async deleteExpense(exp: Expense) {
@@ -204,6 +235,6 @@ export class DashboardComponent implements OnInit {
 
   toggleChartType() {
     this.chartType = this.chartType === 'pie' ? 'bar' : 'pie';
-    this.updateChart();  // Recalculate chart options
+    this.updateChart();
   }
 }
