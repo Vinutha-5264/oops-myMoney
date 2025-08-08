@@ -50,6 +50,7 @@ export class DashboardComponent implements OnInit {
   showMainCategoryInput: boolean = false;
   showSubcategoryInput: boolean = false;
 
+  filteredSubcategories: string[] = [];
 
   // Chart data
   chartLabels: string[] = [];
@@ -76,12 +77,31 @@ export class DashboardComponent implements OnInit {
     return cat?.subcategories || [];
   }
 
+  filterSubcategorySuggestions() {
+    const typed = this.selectedSubcategory.toLowerCase();
+    const allSubs = this.getSelectedSubcategories();
+    this.filteredSubcategories = allSubs.filter(
+      sub => sub.toLowerCase().includes(typed) && sub.toLowerCase() !== typed
+    );
+  }
+
+  selectSubcategory(sub: string) {
+    this.selectedSubcategory = sub;
+    this.filteredSubcategories = [];
+  }
+
   async submitExpense(event: Event) {
     event.preventDefault();
     if (!this.selectedCategoryId || !this.selectedSubcategory || this.newExpense.amount <= 0) return;
 
     const categoryObj = this.categories.find(c => c.id === this.selectedCategoryId);
     const fullCategory = `${categoryObj?.name}:${this.selectedSubcategory}`;
+
+    // Save new subcategory if it doesn't exist
+    if (!this.getSelectedSubcategories().includes(this.selectedSubcategory)) {
+      await this.categoryService.addSubcategory(this.selectedCategoryId, this.selectedSubcategory);
+      await this.loadCategories();
+    }
 
     await this.expenseService.addExpense({
       amount: this.newExpense.amount,

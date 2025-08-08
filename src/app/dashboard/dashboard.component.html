@@ -24,17 +24,8 @@
 
 <!-- Add Expense Toggle -->
 <button class="button button-item" type="button" (click)="showForm = !showForm">
-  <span class="button-bg">
-    <span class="button-bg-layers">
-      <span class="button-bg-layer button-bg-layer-1 -purple"></span>
-      <span class="button-bg-layer button-bg-layer-2 -turquoise"></span>
-      <span class="button-bg-layer button-bg-layer-3 -yellow"></span>
-    </span>
-  </span>
-  <span class="button-inner">
-    <span class="button-inner-static">{{ showForm ? 'Cancel' : 'Add Expense' }}</span>
-    
-  </span>
+  <span class="button-bg"></span>
+  <span class="button-inner">{{ showForm ? 'Cancel' : 'Add Expense' }}</span>
 </button>
 
 <!-- Add Expense Form -->
@@ -46,19 +37,15 @@
 
   <!-- Main Category -->
   <div>
-    <label for="main-category">Main Category:</label>
-    <select id="main-category" [(ngModel)]="selectedCategoryId" name="mainCategory" required>
+    <label>Main Category:</label>
+    <select [(ngModel)]="selectedCategoryId" name="mainCategory" required>
       <option value="" disabled>Select category</option>
       <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
     </select>
-
-    <!-- Blue link toggle -->
     <div class="toggle-link" (click)="showMainCategoryInput = !showMainCategoryInput">
       + {{ showMainCategoryInput ? 'Cancel' : 'Add new main category' }}
     </div>
-
-    <!-- Main Category Input -->
-    <div *ngIf="showMainCategoryInput" class="form-group">
+    <div *ngIf="showMainCategoryInput">
       <input type="text" [(ngModel)]="newCategory" name="newCategory" placeholder="Enter new main category" />
       <button type="button" (click)="addCategory()">Save Category</button>
     </div>
@@ -66,42 +53,24 @@
 
   <!-- Subcategory -->
   <div *ngIf="selectedCategoryId">
-    <label for="subcategory">Subcategory:</label>
-    <select id="subcategory" [(ngModel)]="selectedSubcategory" name="subcategory" required>
-      <option value="" disabled>Select subcategory</option>
-      <option *ngFor="let sub of getSelectedSubcategories()" [value]="sub">{{ sub }}</option>
-    </select>
-
-    <!-- Blue link toggle -->
-    <div class="toggle-link" (click)="showSubcategoryInput = !showSubcategoryInput">
-      + {{ showSubcategoryInput ? 'Cancel' : 'Add new subcategory' }}
-    </div>
-
-    <!-- Subcategory Input -->
-    <div *ngIf="showSubcategoryInput" class="form-group">
-      <input type="text" [(ngModel)]="newSubcategory" name="newSubcategory" placeholder="Enter new subcategory" />
-      <button type="button" (click)="addSubcategory()">Save Subcategory</button>
-    </div>
+    <label>Subcategory:</label>
+    <input type="text" [(ngModel)]="selectedSubcategory" name="subcategory"
+           (input)="filterSubcategorySuggestions()" placeholder="Type or select subcategory" required />
+    <ul *ngIf="filteredSubcategories.length > 0" class="suggestion-list">
+      <li *ngFor="let suggestion of filteredSubcategories" (click)="selectSubcategory(suggestion)">
+        {{ suggestion }}
+      </li>
+    </ul>
   </div>
 
   <!-- Submit Button -->
   <button class="button button-item" type="submit">
-    <span class="button-bg">
-      <span class="button-bg-layers">
-        <span class="button-bg-layer button-bg-layer-1 -purple"></span>
-        <span class="button-bg-layer button-bg-layer-2 -turquoise"></span>
-        <span class="button-bg-layer button-bg-layer-3 -yellow"></span>
-      </span>
-    </span>
-    <span class="button-inner">
-      <span class="button-inner-static">Add Expense</span>
-      
-    </span>
+    <span class="button-bg"></span>
+    <span class="button-inner">Add Expense</span>
   </button>
 </form>
 
 <br>
-
 
 <!-- Filter -->
 <div class="filter-section">
@@ -123,9 +92,7 @@
 </ul>
 
 <!-- Toggle Chart -->
-<button (click)="toggleChartType()">
-  Switch to {{ chartType === 'pie' ? 'Bar' : 'Pie' }} Chart
-</button>
+<button (click)="toggleChartType()">Switch to {{ chartType === 'pie' ? 'Bar' : 'Pie' }} Chart</button>
 
 <!-- Chart -->
 <div class="chart-wrapper">
