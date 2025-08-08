@@ -3,5 +3,6 @@ export interface Expense {
   username: string;
   category: string;
   amount: number;
-  date: string; // ISO string
+  date: string; 
+  // ISO string
 }

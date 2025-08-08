@@ -7,7 +7,8 @@ import {
   query,
   where,
   updateDoc,
-  doc
+  doc,
+  deleteDoc
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { Category } from '../models/category.model';
@@ -34,7 +35,6 @@ export class CategoryService {
 
     const existingSubcategories = categorySnap.data()['subcategories'] || [];
 
-
     if (existingSubcategories.includes(subcategory)) return;
 
     await updateDoc(categoryDocRef, {
@@ -46,5 +46,10 @@ export class CategoryService {
     const q = query(this.categoryRef, where('username', '==', username));
     const snapshot = await getDocs(q);
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Category));
+  }
+
+  async deleteCategory(categoryId: string) {
+    const categoryDocRef = doc(db, 'categories', categoryId);
+    await deleteDoc(categoryDocRef);
   }
 }

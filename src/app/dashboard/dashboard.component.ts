@@ -44,6 +44,11 @@ export class DashboardComponent implements OnInit {
   selectedFilter: string = 'thisMonth';
 
   categories: Category[] = [];
+   // replace with actual logged-in username
+  newCategoryName = '';
+ 
+
+
   selectedCategoryId: string = '';
   selectedSubcategory: string = '';
 
@@ -97,7 +102,6 @@ export class DashboardComponent implements OnInit {
     const categoryObj = this.categories.find(c => c.id === this.selectedCategoryId);
     const fullCategory = `${categoryObj?.name}:${this.selectedSubcategory}`;
 
-    // Save new subcategory if it doesn't exist
     if (!this.getSelectedSubcategories().includes(this.selectedSubcategory)) {
       await this.categoryService.addSubcategory(this.selectedCategoryId, this.selectedSubcategory);
       await this.loadCategories();
@@ -134,6 +138,19 @@ export class DashboardComponent implements OnInit {
     this.newSubcategory = '';
     await this.loadCategories();
   }
+
+  
+  async deleteSelectedCategory() {
+  if (!this.selectedCategoryId) return;
+  const confirmDelete = confirm(
+    'Are you sure you want to delete this category? This cannot be undone.'
+  );
+  if (!confirmDelete) return;
+  await this.categoryService.deleteCategory(this.selectedCategoryId);
+  this.selectedCategoryId = '';
+  await this.loadCategories();
+}
+
 
   async deleteExpense(exp: Expense) {
     if (!confirm('Delete this expense?')) return;
