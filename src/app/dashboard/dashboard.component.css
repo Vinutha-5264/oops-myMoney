@@ -8,14 +8,14 @@
 }
 
 .dashboard-header h1 {
-  font-size: 2.5rem;
+  font-size: 2.1rem;
   font-weight: 800;
   color: #fff;
 }
 
 .dashboard-header p {
   color: #f9fafb;
-  font-size: 1.125rem;
+  font-size: 0.9rem;
   margin-top: 0.5rem;
   font-style: italic;
 }
@@ -66,9 +66,10 @@ h2, h3, h4 {
   flex: 1;
   text-align: center;
   background: #f3e8ff;
-  padding: 0.5rem;
-  border-radius: 0.75rem;
+  padding: 0.6rem;
+  border-radius: 0.85rem;
   font-weight: bold;
+  
   min-width: 0; /* prevent overflow issues */
 }
 
@@ -254,7 +255,7 @@ button[type="submit"] {
   }
 
   .side-stats {
-    flex-direction: column;
+    flex-direction: row;
     gap: 0.5rem;
   }
 

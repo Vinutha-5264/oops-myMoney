@@ -211,7 +211,6 @@ export class DashboardComponent implements OnInit {
           matchesFilter = true;
       }
 
-      // Apply date range filter if set
       if (this.startDate) {
         matchesFilter = matchesFilter && date >= new Date(this.startDate);
       }
@@ -256,6 +255,7 @@ export class DashboardComponent implements OnInit {
     return Object.keys(this.categoryTotals);
   }
 
+  // ✅ Updated to group only by main category
   private calculateTotals(data: Expense[] = this.expenses) {
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -269,7 +269,9 @@ export class DashboardComponent implements OnInit {
     for (const expense of data) {
       const date = new Date(expense.date);
       const amount = expense.amount;
-      const category = expense.category || 'Uncategorized';
+
+      // Only take the main category (before ':')
+      const mainCategory = expense.category?.split(':')[0] || 'Uncategorized';
 
       this.totalSpent += amount;
 
@@ -280,10 +282,10 @@ export class DashboardComponent implements OnInit {
         }
       }
 
-      if (!this.categoryTotals[category]) {
-        this.categoryTotals[category] = 0;
+      if (!this.categoryTotals[mainCategory]) {
+        this.categoryTotals[mainCategory] = 0;
       }
-      this.categoryTotals[category] += amount;
+      this.categoryTotals[mainCategory] += amount;
     }
 
     this.updateChart();
