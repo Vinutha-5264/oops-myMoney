@@ -30,6 +30,7 @@
 
 <!-- Add Expense Form -->
 <form *ngIf="showForm" (submit)="submitExpense($event)" class="add-expense-form">
+  <!-- Amount -->
   <div>
     <label>Amount:</label>
     <input type="number" [(ngModel)]="newExpense.amount" name="amount" required />
@@ -53,8 +54,7 @@
       <span 
         class="delete-link" 
         *ngIf="selectedCategoryId"
-        (click)="deleteSelectedCategory()"
->
+        (click)="deleteSelectedCategory()">
         - Delete existing category
       </span>
     </div>
@@ -69,8 +69,14 @@
   <!-- Subcategory -->
   <div *ngIf="selectedCategoryId">
     <label>Subcategory:</label>
-    <input type="text" [(ngModel)]="selectedSubcategory" name="subcategory"
-           (input)="filterSubcategorySuggestions()" placeholder="Type or select subcategory" required />
+    <input 
+      type="text" 
+      [(ngModel)]="selectedSubcategory" 
+      name="subcategory"
+      (input)="filterSubcategorySuggestions()" 
+      placeholder="Type or select subcategory" 
+      required 
+    />
     <ul *ngIf="filteredSubcategories.length > 0" class="suggestion-list">
       <li *ngFor="let suggestion of filteredSubcategories" (click)="selectSubcategory(suggestion)">
         {{ suggestion }}
@@ -109,22 +115,46 @@
 <!-- Chart -->
 <button (click)="toggleChartType()">Switch to {{ chartType === 'pie' ? 'Bar' : 'Pie' }} Chart</button>
 <div class="chart-wrapper">
-  <canvas baseChart
-    [data]="{ labels: chartLabels, datasets: [{ data: chartData, backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#8e44ad', '#2ecc71', '#e67e22'] }] }"
+  <canvas 
+    baseChart
+    [data]="{
+      labels: chartLabels, 
+      datasets: [{ 
+        data: chartData, 
+        backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#8e44ad', '#2ecc71', '#e67e22'] 
+      }]
+    }"
     [type]="chartType"
     [options]="chartOptions">
   </canvas>
 </div>
 
-<!-- Expense List -->
+
+
+<!-- Date Range Filter -->
+<div class="date-filter">
+  <label>From:</label>
+  <input type="date" [(ngModel)]="startDate" (change)="applyFilter()" />
+  <label>To:</label>
+  <input type="date" [(ngModel)]="endDate" (change)="applyFilter()" />
+</div>
+
+<!-- Expense List with Pagination -->
 <h3>All Expenses</h3>
 <ul class="expense-list">
-  <li *ngFor="let exp of filteredExpenses">
+  <li *ngFor="let exp of paginatedExpenses">
     ₹{{ exp.amount }} - {{ exp.category }} - {{ exp.date | date:'shortDate' }}
     <button (click)="editExpense(exp)">Edit</button>
     <button (click)="deleteExpense(exp)">Delete</button>
   </li>
 </ul>
+
+<!-- Pagination Controls -->
+<div class="pagination-controls">
+  <button (click)="prevPage()" [disabled]="currentPage === 1">⬅ Prev</button>
+  <span>Page {{ currentPage }} of {{ totalPages }}</span>
+  <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next ➡</button>
+</div>
 
 <!-- Edit Expense -->
 <div *ngIf="editingExpense" class="edit-form">
@@ -136,6 +166,7 @@
     <button type="button" (click)="cancelEdit()">Cancel</button>
   </form>
 </div>
+
 
 <!-- Stat Box -->
 <app-stat-box label="All Time" [value]="totalSpent"></app-stat-box>

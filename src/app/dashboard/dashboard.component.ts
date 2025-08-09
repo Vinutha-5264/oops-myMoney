@@ -23,6 +23,7 @@ export class DashboardComponent implements OnInit {
 
   expenses: Expense[] = [];
   filteredExpenses: Expense[] = [];
+  paginatedExpenses: Expense[] = [];
 
   totalSpent = 0;
   monthlyTotal = 0;
@@ -44,10 +45,7 @@ export class DashboardComponent implements OnInit {
   selectedFilter: string = 'thisMonth';
 
   categories: Category[] = [];
-   // replace with actual logged-in username
   newCategoryName = '';
- 
-
 
   selectedCategoryId: string = '';
   selectedSubcategory: string = '';
@@ -62,6 +60,15 @@ export class DashboardComponent implements OnInit {
   chartData: number[] = [];
   chartType: 'pie' | 'bar' = 'bar';
   chartOptions: any;
+
+  // Pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalPages: number = 1;
+
+  // Date range filter
+  startDate: string = '';
+  endDate: string = '';
 
   async ngOnInit() {
     await this.loadExpenses();
@@ -139,18 +146,16 @@ export class DashboardComponent implements OnInit {
     await this.loadCategories();
   }
 
-  
   async deleteSelectedCategory() {
-  if (!this.selectedCategoryId) return;
-  const confirmDelete = confirm(
-    'Are you sure you want to delete this category? This cannot be undone.'
-  );
-  if (!confirmDelete) return;
-  await this.categoryService.deleteCategory(this.selectedCategoryId);
-  this.selectedCategoryId = '';
-  await this.loadCategories();
-}
-
+    if (!this.selectedCategoryId) return;
+    const confirmDelete = confirm(
+      'Are you sure you want to delete this category? This cannot be undone.'
+    );
+    if (!confirmDelete) return;
+    await this.categoryService.deleteCategory(this.selectedCategoryId);
+    this.selectedCategoryId = '';
+    await this.loadCategories();
+  }
 
   async deleteExpense(exp: Expense) {
     if (!confirm('Delete this expense?')) return;
@@ -187,22 +192,64 @@ export class DashboardComponent implements OnInit {
 
     this.filteredExpenses = this.expenses.filter(exp => {
       const date = new Date(exp.date);
-      switch (this.selectedFilter) {
+      let matchesFilter = false;
+      switch (this.filterOption) {
         case 'thisMonth':
-          return date.getFullYear() === currentYear && date.getMonth() === currentMonth;
+          matchesFilter = date.getFullYear() === currentYear && date.getMonth() === currentMonth;
+          break;
         case 'lastMonth':
           const lastMonthDate = new Date(currentYear, currentMonth - 1, 1);
-          return date.getFullYear() === lastMonthDate.getFullYear() &&
-                 date.getMonth() === lastMonthDate.getMonth();
+          matchesFilter =
+            date.getFullYear() === lastMonthDate.getFullYear() &&
+            date.getMonth() === lastMonthDate.getMonth();
+          break;
         case 'thisYear':
-          return date.getFullYear() === currentYear;
+          matchesFilter = date.getFullYear() === currentYear;
+          break;
         case 'all':
         default:
-          return true;
+          matchesFilter = true;
       }
+
+      // Apply date range filter if set
+      if (this.startDate) {
+        matchesFilter = matchesFilter && date >= new Date(this.startDate);
+      }
+      if (this.endDate) {
+        matchesFilter = matchesFilter && date <= new Date(this.endDate);
+      }
+
+      return matchesFilter;
     });
 
     this.calculateTotals(this.filteredExpenses);
+    this.setupPagination();
+  }
+
+  setupPagination() {
+    this.totalPages = Math.ceil(this.filteredExpenses.length / this.itemsPerPage) || 1;
+    this.currentPage = 1;
+    this.updatePaginatedExpenses();
+  }
+
+  updatePaginatedExpenses() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedExpenses = this.filteredExpenses.slice(startIndex, endIndex);
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePaginatedExpenses();
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePaginatedExpenses();
+    }
   }
 
   categoryKeys() {
